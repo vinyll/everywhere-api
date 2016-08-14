@@ -8,9 +8,9 @@ class DuplicateException(Exception):
     pass
 
 
-def get_owner(name, key):
+def get_owner(name):
     Owner = Query()
-    return users_db.get((Owner.name == name) & (Owner.key == key))
+    return users_db.get(Owner.name == name)
 
 
 def create_owner(name):
