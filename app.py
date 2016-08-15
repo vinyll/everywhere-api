@@ -14,8 +14,8 @@ api = Api(app, version='1.0', title='Everywhere API',
     description='Everywhere content management API',
 )
 
-user_ns = api.namespace('users', description='Users operations')
-content_ns = api.namespace('contents', description='Contents operations')
+user_ns = api.namespace('user', description='Users operations')
+content_ns = api.namespace('content', description='Contents operations')
 
 edit_parser = reqparse.RequestParser()
 edit_parser.add_argument('key', help='the owner\'s key', location='form')
@@ -23,7 +23,7 @@ edit_parser.add_argument('body', help='the value of the content',
                          location='form')
 
 
-@user_ns.route('/user/<string:name>/')
+@user_ns.route('/<string:name>/')
 class UserView(Resource):
     @user_ns.doc('create new user')
     def post(self, name):
@@ -35,7 +35,7 @@ class UserView(Resource):
             }, 409
 
 
-@content_ns.route('/content/<string:user>/<string:name>/')
+@content_ns.route('/<string:user>/<string:name>/')
 class ContentView(Resource):
     @content_ns.doc('get content')
     def get(self, user, name):

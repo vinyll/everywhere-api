@@ -49,18 +49,18 @@ You can of course use [HTTPie](https://github.com/jkbrzt/httpie),
 
 ### Create a new user
 
-Go to http://localhost:5000/#!/users/create_new_user and create a user called "_mywebsite_".
+Go to http://localhost:5000/#!/user/create_new_user and create a user called "_mywebsite_".
 
 It will return an authentication key phrase. Keep it aside!
 
 ### Create a new content
 
-Go to http://localhost:5000/#!/contents/create_or_update_content and create
+Go to http://localhost:5000/#!/content/create_or_update_content and create
 a new content called "_home_article_" for user "_mywebsite_".
 
 ### Read a content
 
-Go to http://localhost:5000/#!/contents/get_content and request the
+Go to http://localhost:5000/#!/content/get_content and request the
 content called "_home_article_" for user "_mywebsite_".
 
 
