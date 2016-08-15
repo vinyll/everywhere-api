@@ -1,3 +1,5 @@
+from os import environ
+
 from flask import Flask
 from flask_restplus import Resource, Api, reqparse
 from flask.ext.cors import CORS
@@ -56,4 +58,6 @@ class ContentEdit(Resource):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0',
+            port=environ.get('PORT', 80),
+            debug=environ.get('DEBUG', False))
