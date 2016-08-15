@@ -9,7 +9,13 @@ import storage
 
 app = Flask(__name__)
 CORS(app, resources=r'/*', allow_headers='Content-Type')
-api = Api(app)
+
+api = Api(app, version='1.0', title='Everywhere API',
+    description='Everywhere content management API',
+)
+
+user_ns = api.namespace('users', description='Users operations')
+content_ns = api.namespace('contents', description='Contents operations')
 
 edit_parser = reqparse.RequestParser()
 edit_parser.add_argument('key', help='the owner\'s key', location='form')
@@ -17,8 +23,9 @@ edit_parser.add_argument('body', help='the value of the content',
                          location='form')
 
 
-@api.route('/user/<string:name>/')
+@user_ns.route('/user/<string:name>/')
 class UserView(Resource):
+    @user_ns.doc('create new user')
     def post(self, name):
         try:
             return storage.create_owner(name)
@@ -28,8 +35,9 @@ class UserView(Resource):
             }, 409
 
 
-@api.route('/content/<string:user>/<string:name>/')
+@content_ns.route('/content/<string:user>/<string:name>/')
 class ContentView(Resource):
+    @content_ns.doc('get content')
     def get(self, user, name):
         owner = storage.get_owner(user)
         content = storage.get_content(name=name, owner=owner)
@@ -41,10 +49,8 @@ class ContentView(Resource):
         else:
             return {'name': name, 'body': ''}, 404
 
-
-
-@api.route('/content/<string:user>/<string:name>/')
-class ContentEdit(Resource):
+    @api.expect(edit_parser)
+    @content_ns.doc('create or update content')
     def post(self, user, name):
         args = edit_parser.parse_args()
         owner = storage.get_owner(name=user)
@@ -59,5 +65,5 @@ class ContentEdit(Resource):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',
-            port=environ.get('PORT', 80),
+            port=environ.get('PORT', 5000),
             debug=environ.get('DEBUG', False))
