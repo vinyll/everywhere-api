@@ -3,10 +3,8 @@ from os import environ
 
 DEBUG = False
 
-APP_RUN_PARAMS = {
-    'host': '0.0.0.0',
-    'port': 80,
-    'debug': DEBUG
-}
+APP_HOST = '0.0.0.0'
+APP_PORT = 80
+APP_DEBUG = DEBUG
 
 STORAGE_PATH = 'data'

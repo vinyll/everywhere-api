@@ -68,4 +68,6 @@ class ContentView(Resource):
 
 
 if __name__ == '__main__':
-    app.run(**app.config['APP_RUN_PARAMS'])
+    app.run(DEBUG=app.config['APP_DEBUG'],
+            PORT=app.config['APP_PORT'],
+            host=app.config['APP_HOST'])

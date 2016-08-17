@@ -4,10 +4,12 @@ from tinydb import TinyDB, where, Query
 from xkcdpass import xkcd_password as xp
 
 
+db = {'users': None, 'contents': {}}
+
+
 class DuplicateException(Exception):
     pass
 
-db = {'users': None, 'contents': {}}
 
 def init(config):
     path = config['STORAGE_PATH']
