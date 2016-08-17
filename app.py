@@ -1,4 +1,4 @@
-from os import environ
+import os
 
 from flask import Flask
 from flask_restplus import Resource, Api, reqparse
@@ -8,11 +8,15 @@ import storage
 
 
 app = Flask(__name__)
+app.config.from_object('settings')
+app.config.from_pyfile('settings.cfg')
+
+storage.init(app.config)
+
 CORS(app, resources=r'/*', allow_headers='Content-Type')
 
 api = Api(app, version='1.0', title='Everywhere API',
-    description='Everywhere content management API',
-)
+          description='Everywhere content management API')
 
 user_ns = api.namespace('user', description='Users operations')
 content_ns = api.namespace('content', description='Contents operations')
@@ -64,6 +68,4 @@ class ContentView(Resource):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',
-            port=environ.get('PORT', 5000),
-            debug=environ.get('DEBUG', False))
+    app.run(**app.config['APP_RUN_PARAMS'])

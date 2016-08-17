@@ -7,25 +7,36 @@ from xkcdpass import xkcd_password as xp
 class DuplicateException(Exception):
     pass
 
+db = {'users': None, 'contents': {}}
+
+def init(config):
+    path = config['STORAGE_PATH']
+    try:
+        os.makedirs(path)
+    except FileExistsError:
+        pass
+    db['users'] = TinyDB(os.path.join(path, 'users.json'))
+    db['content_parser'] = TinyDB(os.path.join(path, 'contents.json'))
+
 
 def get_owner(name):
     Owner = Query()
-    return users_db.get(Owner.name == name)
+    return db['users'].get(Owner.name == name)
 
 
 def create_owner(name):
     Owner = Query()
     # No duplicate
-    if users_db.get(Owner.name == name):
+    if db['users'].get(Owner.name == name):
         raise DuplicateException
 
     wordfile = xp.locate_wordfile()
     words = xp.generate_wordlist(wordfile=wordfile, min_length=3, max_length=8)
-    user_id = users_db.insert({
+    user_id = db['users'].insert({
         'name': name,
         'key': xp.generate_xkcdpassword(words, numwords=4)
     })
-    return users_db.get(eid=user_id)
+    return db['users'].get(eid=user_id)
 
 
 def owner_to_id(owner):
@@ -39,7 +50,7 @@ def owner_to_id(owner):
 def get_content(name, owner):
     owner_id = owner_to_id(owner)
     Content = Query()
-    return contents_db.get((Content.name == name) &
+    return db['content_parser'].get((Content.name == name) &
                            (Content.owner == owner_id))
 
 
@@ -50,7 +61,7 @@ def create_content(name, value, owner):
     if get_content(name, owner):
         raise DuplicateException
 
-    content_id = contents_db.insert({
+    content_id = db['content_parser'].insert({
         'name': name,
         'value': value,
         'owner': owner_id
@@ -61,7 +72,7 @@ def create_content(name, value, owner):
 def update_content(name, value, owner):
     Content = Query()
     content = get_content(name, owner)
-    content_id = contents_db.update({'value': value}, eids=[content.eid])[0]
+    content_id = db['content_parser'].update({'value': value}, eids=[content.eid])[0]
     return get_content(name, owner)
 
 
@@ -70,18 +81,6 @@ def crupdate_content(name, value, owner):
     return method(name, value, owner)
 
 
-def prepare(path):
-    try:
-        os.makedirs(path)
-    except FileExistsError:
-        pass
-    return (TinyDB(os.path.join(path, 'users.json')),
-            TinyDB(os.path.join(path, 'contents.json')))
-
-
 def drop_all():
-    users_db.purge_tables()
-    contents_db.purge_tables()
-
-
-(users_db, contents_db) = prepare('data/')
+    db['users'].purge_tables()
+    db['content_parser'].purge_tables()

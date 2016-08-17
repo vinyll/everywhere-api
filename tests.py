@@ -1,4 +1,5 @@
 from unittest import TestCase
+import shutil
 
 import storage
 from storage import (
@@ -7,7 +8,7 @@ from storage import (
 )
 
 # Change the path for db storage.
-(storage.users_db, storage.content_db) = storage.prepare('data/tests/')
+storage.init({'STORAGE_PATH': 'data/tests'})
 
 
 class StorageTest(TestCase):

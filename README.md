@@ -72,6 +72,12 @@ You can also consider serving contents from your website server side (with
 Python, NodeJS, PHP or whatever server side language) reading the API.
 
 
+## Configuration
+
+See the _settings.cfg_ file about what you can configure.
+Feel free to modify that file.
+
+
 ## License: MIT
 
 View the [LICENSE.txt](https://github.com/vinyll/everywhere-api/blob/master/LICENSE.txt) file
